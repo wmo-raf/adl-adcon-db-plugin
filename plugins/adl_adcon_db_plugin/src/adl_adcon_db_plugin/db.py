@@ -13,6 +13,10 @@ class ADCONDBClient:
             user=db_user,
         )
     
+    def close(self):
+        if self.connection:
+            self.connection.close()
+    
     def get_stations(self, only_stations_with_coords=False):
         sql = "SELECT id, displayname,latitude,longitude,timezoneid FROM node_60 WHERE dtype ='DeviceNode'"
         
@@ -65,8 +69,8 @@ class ADCONDBClient:
             
             data = conn_cursor.fetchall()
             
-            # organize the data by tag_ids(parameters) and dates
-            parameter_data_by_tag_id_by_date = {}
+            # organize the data by dates
+            parameter_data_by_date = {}
             
             for data_point in data:
                 data_point = dict(zip([column.name for column in conn_cursor.description], data_point))
@@ -83,12 +87,11 @@ class ADCONDBClient:
                     data_point["enddate"] = end_date
                     data_point["startdate"] = start_date
                     
-                    if not parameter_data_by_tag_id_by_date.get(tag_id):
-                        parameter_data_by_tag_id_by_date[tag_id] = {}
+                    if not parameter_data_by_date.get(end_date):
+                        parameter_data_by_date[end_date] = {
+                            "TIMESTAMP": end_date
+                        }
                     
-                    if parameter_data_by_tag_id_by_date.get(tag_id).get(end_date):
-                        parameter_data_by_tag_id_by_date[tag_id][end_date].append(data_point)
-                    else:
-                        parameter_data_by_tag_id_by_date[tag_id][end_date] = [data_point]
+                    parameter_data_by_date[end_date][tag_id] = data_point["measuringvalue"]
         
-        return parameter_data_by_tag_id_by_date
+        return list(parameter_data_by_date.values())

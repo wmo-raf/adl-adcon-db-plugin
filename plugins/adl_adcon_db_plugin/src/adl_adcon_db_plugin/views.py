@@ -38,6 +38,8 @@ def get_adcon_stations_for_connection(request):
     db = network_conn.get_db_connection()
     stations = db.get_stations(only_stations_with_coords=network_conn.only_stations_with_coords)
     
+    db.close()
+    
     return JsonResponse(stations, safe=False)
 
 
