@@ -1,0 +1,53 @@
+{% extends "wagtailadmin/generic/base.html" %}
+
+{% load i18n wagtailadmin_tags static %}
+
+{% block main_content %}
+    <style>
+
+        .station-detail thead th {
+            font-weight: bold !important;
+        }
+
+    </style>
+    <div style="margin-top: 40px">
+        <h1>
+            {% translate "Station Detail" %}
+        </h1>
+        <div style="margin-top: 40px">
+            <table class="listing station-detail">
+                <thead>
+                <tr>
+                    <th>Variable Name</th>
+                    <th>Subclass</th>
+                    <th>Units</th>
+                </tr>
+                </thead>
+                <tbody>
+                {% for parameter in station_parameters %}
+                    <tr>
+                        <td class="title">
+                            <h3>
+                                {{ parameter.displayname }}
+                            </h3>
+
+                        </td>
+
+                        <td>
+                            {{ parameter.subclass }}
+                        </td>
+                        <td>
+                            {{ parameter.units }}
+                        </td>
+                    </tr>
+                {% endfor %}
+
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+
+{% endblock %}
+
+

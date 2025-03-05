@@ -1,0 +1,52 @@
+{% extends "wagtailadmin/generic/base.html" %}
+
+{% load i18n wagtailadmin_tags static %}
+
+{% block main_content %}
+
+    <style>
+
+        .menu-icon {
+            height: 30px;
+            width: 30px;
+            margin-right: 10px;
+        }
+
+        .menu-icon svg {
+            height: 30px;
+            width: 30px;
+        }
+
+        .menu-items li a {
+            display: flex;
+            align-items: center;
+        }
+
+
+    </style>
+
+
+    <div style="margin-top: 40px">
+        <ul class="listing menu-items">
+            {% for item in menu_items %}
+                <li>
+                    <div class="title">
+                        <h2 style="text-transform: capitalize">
+                            <a href="{{ item.url }}">
+                                <span class="menu-icon">
+                                    {% icon name=item.icon_name %}
+                                </span>
+                                <span>
+                                    {{ item.label }}
+                                </span>
+                            </a>
+                        </h2>
+                    </div>
+                </li>
+
+            {% endfor %}
+        </ul>
+    </div>
+{% endblock %}
+
+
