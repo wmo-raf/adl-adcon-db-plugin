@@ -121,6 +121,7 @@ def adcon_station_variable_mapping_list(request, station_link_id):
     ]
     
     context = {
+        "page_title": _("Station Parameter Mapping"),
         "breadcrumbs_items": breadcrumbs_items,
         "all_count": all_count,
         "result_count": result_count,
@@ -156,6 +157,7 @@ def adcon_station_variable_mapping_create(request, station_link_id):
     ]
     
     context = {
+        "page_title": _("Create Station Parameter Mapping"),
         "breadcrumbs_items": breadcrumbs_items,
         "header_icon": "snippet",
         "page_subtitle": _("Create Station Parameter Mapping"),
