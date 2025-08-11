@@ -49,8 +49,6 @@ class ADCONDBConnection(NetworkConnection):
 class ADCONStationLink(StationLink):
     adcon_station_id = models.PositiveIntegerField(verbose_name=_("ADCON Station ID"),
                                                    help_text=_("Select an ADCON Station ID"))
-    timezone = TimeZoneField(default='UTC', verbose_name=_("Station Timezone"),
-                             help_text=_("Timezone used by the station for recording observations"))
     start_date = models.DateTimeField(blank=True, null=True, validators=[validate_start_date],
                                       verbose_name=_("Start Date"),
                                       help_text=_("Start date for data pulling. Select a past date to include the "
@@ -58,7 +56,6 @@ class ADCONStationLink(StationLink):
     
     panels = StationLink.panels + [
         FieldPanel("adcon_station_id", widget=AdconStationSelectWidget("get_adcon_stations_for_connection")),
-        FieldPanel("timezone"),
         FieldPanel("start_date"),
     ]
     
