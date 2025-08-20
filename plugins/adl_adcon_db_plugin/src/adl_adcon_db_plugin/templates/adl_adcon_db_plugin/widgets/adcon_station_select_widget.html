@@ -4,7 +4,7 @@
     </div>
 
     <div style="display: flex;align-items: center">
-        <select name="{{ widget.name }}"{% include "django/forms/widgets/attrs.html" %}>
+        <select name="{{ widget.name }}" {% include "django/forms/widgets/attrs.html" %}>
         </select>
         <div id="spinner" style="margin-left: 10px;display: none">
             <svg class="icon icon-spinner w-w-8 w-h-8" aria-hidden="true">
@@ -51,7 +51,7 @@
                     await this.setAdconStationOptions(selectedNetworkConnectionId);
 
                     if (this.initialStationId) {
-                        this.setSelectedOption(this.initialStationId);
+                        this.setSelectedOption(this.initialStationId, {initial: true});
                     }
                 }
 
@@ -68,8 +68,11 @@
                 this.spinner.style.display = 'none';
             }
 
-            setSelectedOption(value) {
+            setSelectedOption(value, {initial = false} = {}) {
                 this.selectInput.value = value;
+                if (initial) {
+                    this.selectInput.dispatchEvent(new CustomEvent('change', {bubbles: true, detail: {custom: true}}));
+                }
             }
 
             async setAdconStationOptions(selectedNetworkConnectionId) {

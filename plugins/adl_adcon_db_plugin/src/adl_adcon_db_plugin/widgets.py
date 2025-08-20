@@ -1,4 +1,5 @@
-from django.forms import Widget, Select
+from django.forms import Widget
+from django.urls import reverse
 
 
 class AdconStationSelectWidget(Widget):
@@ -13,6 +14,19 @@ class AdconStationSelectWidget(Widget):
         
         context.update({
             'adcon_stations_url_name': self.adcon_stations_url_name,
+        })
+        
+        return context
+
+
+class AdconVariableSelectWidget(Widget):
+    template_name = 'adl_adcon_db_plugin/widgets/adcon_variable_select_widget.html'
+    
+    def get_context(self, name, value, attrs):
+        context = super().get_context(name, value, attrs)
+        
+        context.update({
+            'adcon_variables_url': reverse("get_adcon_variables_for_connection"),
         })
         
         return context

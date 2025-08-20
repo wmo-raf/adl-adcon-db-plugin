@@ -1,13 +1,12 @@
 from adl.core.models import NetworkConnection, StationLink, DataParameter, Unit
 from django.db import models
-from django.urls import reverse
 from django.utils.translation import gettext_lazy as _
-from timezone_field import TimeZoneField
-from wagtail.admin.panels import FieldPanel, MultiFieldPanel
+from modelcluster.fields import ParentalKey
+from wagtail.admin.panels import FieldPanel, MultiFieldPanel, InlinePanel
 
 from .db import ADCONDBClient
 from .validators import validate_start_date
-from .widgets import AdconStationSelectWidget
+from .widgets import AdconStationSelectWidget, AdconVariableSelectWidget
 
 
 class ADCONDBConnection(NetworkConnection):
@@ -57,39 +56,55 @@ class ADCONStationLink(StationLink):
     panels = StationLink.panels + [
         FieldPanel("adcon_station_id", widget=AdconStationSelectWidget("get_adcon_stations_for_connection")),
         FieldPanel("start_date"),
+        InlinePanel("variable_mappings", label=_("Station Variable Mapping"), heading=_("Station Variable Mappings")),
     ]
     
     class Meta:
         verbose_name = _("ADCON Station Link")
         verbose_name_plural = _("ADCON Station Links")
     
-    def get_extra_model_admin_buttons(self, classname=None):
-        buttons = [
-            {
-                "url": reverse("adcon_db_station_detail", args=[self.id]),
-                "label": _("ADCON Station Detail"),
-                "classname": classname,
-                "title": _("ADCON Station Detail"),
-            },
-            {
-                "url": reverse("adcon_station_variable_mapping_list", args=[self.id]),
-                "label": _("Variable Mapping"),
-                "classname": classname,
-                "title": _("Variable Mapping"),
-            }
-        ]
-        
-        return buttons
-    
     def __str__(self):
         return f"{self.adcon_station_id} - {self.station} - {self.station.wigos_id}"
+    
+    def get_variable_mappings(self):
+        """
+        Returns the variable mappings for this station link.
+        """
+        return self.variable_mappings.all()
+    
+    def get_first_collection_date(self):
+        """
+        Returns the first collection date for this station link.
+        Returns None if no start date is set.
+        """
+        return self.start_date
 
 
 class ADCONStationVariableMapping(models.Model):
-    station_link = models.ForeignKey(ADCONStationLink, on_delete=models.CASCADE, related_name="variable_mappings")
+    station_link = ParentalKey(ADCONStationLink, on_delete=models.CASCADE, related_name="variable_mappings")
     adl_parameter = models.ForeignKey(DataParameter, on_delete=models.CASCADE, verbose_name=_("ADL Parameter"))
     adcon_parameter_id = models.PositiveIntegerField(verbose_name=_("ADCON Parameter ID"), unique=True)
     adcon_parameter_unit = models.ForeignKey(Unit, on_delete=models.CASCADE, verbose_name=_("ADCON Parameter Unit"))
     
+    panels = [
+        FieldPanel("adl_parameter"),
+        FieldPanel("adcon_parameter_id", widget=AdconVariableSelectWidget),
+        FieldPanel("adcon_parameter_unit"),
+    ]
+    
     def __str__(self):
         return f"{self.station_link.station.name} - {self.adl_parameter} - {self.adcon_parameter_id}"
+    
+    @property
+    def source_parameter_name(self):
+        """
+        Returns the shortcode of the TAHMO variable.
+        """
+        return self.adcon_parameter_id
+    
+    @property
+    def source_parameter_unit(self):
+        """
+        Returns the unit of the TAHMO variable.
+        """
+        return self.adcon_parameter_unit
