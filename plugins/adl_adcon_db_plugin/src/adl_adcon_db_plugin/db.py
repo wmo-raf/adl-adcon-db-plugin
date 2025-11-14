@@ -34,8 +34,10 @@ class ADCONDBClient:
     def get_adcon_parameters_for_station(self, adcon_station_id):
         with self.connection.cursor() as cursor:
             cursor.execute(
-                """SELECT DISTINCT id, displayname,subclass
-                    FROM node_60  WHERE dtype ='AnalogTagNode' and parent_id = %s""", (adcon_station_id,)
+                """SELECT DISTINCT id, displayname, subclass
+                   FROM node_60
+                   WHERE dtype = 'AnalogTagNode'
+                     and parent_id = %s""", (adcon_station_id,)
             )
             
             parameters = cursor.fetchall()
@@ -89,7 +91,7 @@ class ADCONDBClient:
                     
                     if not parameter_data_by_date.get(end_date):
                         parameter_data_by_date[end_date] = {
-                            "TIMESTAMP": end_date
+                            "observation_time": end_date
                         }
                     
                     parameter_data_by_date[end_date][tag_id] = data_point["measuringvalue"]
