@@ -33,8 +33,20 @@ class ADCONDBPlugin(Plugin):
             start_timestamp = int(start_date.timestamp())
             end_timestamp = int(end_date.timestamp())
 
-            records = db.get_data_for_parameters(station_adcon_parameter_ids, start_timestamp, end_timestamp,
-                                                 station_timezone)
+            records, sources_count = db.get_data_for_parameters(
+                station_adcon_parameter_ids, start_timestamp, end_timestamp, station_timezone)
+
+            # Duck-typed sources-count handover: core stores this on the run's
+            # activity log so "looked, found nothing" (0) stays distinguishable
+            # from "never looked" (None). Committed only here, once the fetch
+            # has returned — a query that raised leaves the attribute None, and
+            # core's evidence rule abstains on NULL rather than blaming the
+            # source for a run that never got an answer. The accumulate idiom is
+            # used even though this plugin makes one query: there is no
+            # straight-assignment variant.
+            if getattr(station_link, "adl_sources_count", None) is None:
+                station_link.adl_sources_count = 0
+            station_link.adl_sources_count += sources_count
 
             return records
 
