@@ -16,10 +16,10 @@ class ADCONDBConnection(NetworkConnection):
     db_name = models.CharField(max_length=255, verbose_name=_("Database Name"))
     db_user = models.CharField(max_length=255, verbose_name=_("Database User"))
     db_password = models.CharField(max_length=255, blank=True, null=True, verbose_name=_("Database Password"))
-    
+
     only_stations_with_coords = models.BooleanField(default=False,
                                                     verbose_name=_("List Only Stations with Coordinates"))
-    
+
     panels = NetworkConnection.panels + [
         MultiFieldPanel([
             FieldPanel("db_host"),
@@ -30,11 +30,11 @@ class ADCONDBConnection(NetworkConnection):
         ], heading=_("Database Credentials")),
         FieldPanel("only_stations_with_coords"),
     ]
-    
+
     class Meta:
         verbose_name = _("ADCON Database Connection")
         verbose_name_plural = _("ADCON Database Connections")
-    
+
     def get_db_connection(self):
         return ADCONDBClient(
             db_host=self.db_host,
@@ -52,26 +52,26 @@ class ADCONStationLink(StationLink):
                                       verbose_name=_("Start Date"),
                                       help_text=_("Start date for data pulling. Select a past date to include the "
                                                   "historical data. Leave blank for collecting realtime data only"), )
-    
+
     panels = StationLink.panels + [
         FieldPanel("adcon_station_id", widget=AdconStationSelectWidget("get_adcon_stations_for_connection")),
         FieldPanel("start_date"),
         InlinePanel("variable_mappings", label=_("Station Variable Mapping"), heading=_("Station Variable Mappings")),
     ]
-    
+
     class Meta:
         verbose_name = _("ADCON Station Link")
         verbose_name_plural = _("ADCON Station Links")
-    
+
     def __str__(self):
         return f"{self.adcon_station_id} - {self.station} - {self.station.wigos_id}"
-    
+
     def get_variable_mappings(self):
         """
         Returns the variable mappings for this station link.
         """
         return self.variable_mappings.all()
-    
+
     def get_first_collection_date(self):
         """
         Returns the first collection date for this station link.
@@ -85,23 +85,23 @@ class ADCONStationVariableMapping(models.Model):
     adl_parameter = models.ForeignKey(DataParameter, on_delete=models.CASCADE, verbose_name=_("ADL Parameter"))
     adcon_parameter_id = models.PositiveIntegerField(verbose_name=_("ADCON Parameter ID"), unique=True)
     adcon_parameter_unit = models.ForeignKey(Unit, on_delete=models.CASCADE, verbose_name=_("ADCON Parameter Unit"))
-    
+
     panels = [
         FieldPanel("adl_parameter"),
         FieldPanel("adcon_parameter_id", widget=AdconVariableSelectWidget),
         FieldPanel("adcon_parameter_unit"),
     ]
-    
+
     def __str__(self):
         return f"{self.station_link.station.name} - {self.adl_parameter} - {self.adcon_parameter_id}"
-    
+
     @property
     def source_parameter_name(self):
         """
         Returns the shortcode of the TAHMO variable.
         """
         return self.adcon_parameter_id
-    
+
     @property
     def source_parameter_unit(self):
         """
