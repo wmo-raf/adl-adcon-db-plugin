@@ -1,0 +1,96 @@
+# Screenshot manifest for the ADL ADCON DB Plugin guide (docs/guide.md).
+# Regenerate from the adl repo:  scripts/capture-plugin-docs.sh ../adl-plugins/adl-adcon-db-plugin
+# Fixture: docs/screenshots/fixture.json (connection 1 = "ADCON addVANTAGE (demo)",
+# station link 1 = DEMO001). The stack includes a mock addVANTAGE database
+# (docs/screenshots/compose.mock.yml), so every shot is capturable without credentials;
+# with live credentials in docs/screenshots/credentials.env the same shots show a real server.
+# Format: defaults + screenshots (name/url/setup/callouts/capture), run by adl's
+# docs/screenshots/capture/capture.py; output derives from name: docs/images/<name>.png.
+# Callouts are numbered badges/outlines only — never text in images.
+
+defaults:
+  viewport:
+  - 1440
+  - 900
+  padding: 12
+screenshots:
+- name: adcon_db_connection_form
+  url: /adcondbconnection/edit/1/
+  setup:
+  - fill: { selector: '#id_db_password', value: '••••••••••••' }
+  callouts:
+  - badge:
+      target: '#id_db_host'
+      n: 1
+  - badge:
+      target: '#id_db_port'
+      n: 2
+  - badge:
+      target: '#id_db_name'
+      n: 3
+  - badge:
+      target: '#id_db_user'
+      n: 4
+  - badge:
+      target: '#id_db_password'
+      n: 5
+  - badge:
+      target: '#id_only_stations_with_coords'
+      n: 6
+  capture:
+    selector: "#w-editor-form"
+- name: adcon_db_station_link_form
+  url: /adconstationlink/edit/1/
+  setup:
+  - wait_until: "document.querySelector('#id_adcon_station_id').options.length > 1"
+  callouts:
+  - badge:
+      target: '#id_adcon_station_id'
+      n: 1
+  - badge:
+      target: '#id_start_date'
+      n: 2
+  - badge:
+      target: '#id_variable_mappings-FORMS'
+      n: 3
+  capture:
+    selector: "#w-editor-form"
+- name: adcon_db_station_select
+  url: /adconstationlink/edit/1/
+  setup:
+  - wait_until: "document.querySelector('#id_adcon_station_id').options.length > 1"
+  callouts:
+  - highlight: '#id_adcon_station_id'
+  capture:
+    selector: '[data-contentpath="adcon_station_id"]'
+- name: adcon_db_variable_select
+  url: /adconstationlink/edit/1/
+  setup:
+  - wait_until: "document.querySelector('#id_variable_mappings-0-adcon_parameter_id').options.length > 1"
+  callouts:
+  - badge:
+      target: '#id_variable_mappings-0-adl_parameter-chooser'
+      n: 1
+  - badge:
+      target: '#id_variable_mappings-0-adcon_parameter_id'
+      n: 2
+  - badge:
+      target: '#id_variable_mappings-0-adcon_parameter_unit-chooser'
+      n: 3
+  capture:
+    # one mapping row — the guide's step describes a row, not the whole panel
+    selector: '#inline_child_variable_mappings-0'
+- name: adcon_db_station_detail
+  url: /adl-db-plugin/station-detail/1/
+  capture:
+    selector: main
+- name: adcon_db_ingestion_diagnostic
+  url: /monitoring/connection/1/health/
+  callouts:
+  - highlight: .health-probe-form button
+  capture:
+    selector: .health-diagnostic
+- name: adcon_db_station_source_check
+  url: /adconstationlink/inspect/1/
+  capture:
+    selector: ":nth-match(.collection-status, 2)"

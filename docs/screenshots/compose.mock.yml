@@ -1,0 +1,15 @@
+# Mock ADCON addVANTAGE database for the documentation screenshot harness
+# (merged into the capture stack by adl/scripts/capture-plugin-docs.sh).
+services:
+  mock_adcon_db:
+    image: postgres:15-alpine
+    container_name: adl-adcon-db-plugin-docs-mock-adcon-db
+    environment:
+      POSTGRES_USER: adcon
+      POSTGRES_PASSWORD: adcon
+      POSTGRES_DB: addvantage
+    volumes:
+      - ./docs/screenshots/mock-adcon-db:/docker-entrypoint-initdb.d:ro
+  adl:
+    depends_on:
+      - mock_adcon_db

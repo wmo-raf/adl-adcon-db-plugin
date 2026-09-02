@@ -1,0 +1,52 @@
+{
+  "capture": {
+    "connection": "ADCON addVANTAGE (demo)",
+    "ingest": true,
+    "probe": true,
+    "station_checks": ["DEMO001"],
+    "wait": 180
+  },
+  "connection": {
+    "model": "adl_adcon_db_plugin.ADCONDBConnection",
+    "fields": {
+      "name": "ADCON addVANTAGE (demo)",
+      "plugin": "adl_adcon_db_plugin",
+      "stations_timezone": "Africa/Nairobi",
+      "plugin_processing_interval": 1,
+      "db_host": "$ENV:ADCON_DB_HOST|mock_adcon_db",
+      "db_port": "$ENV:ADCON_DB_PORT|5432",
+      "db_name": "$ENV:ADCON_DB_NAME|addvantage",
+      "db_user": "$ENV:ADCON_DB_USER|adl_reader",
+      "db_password": "$ENV:ADCON_DB_PASSWORD|adl_reader",
+      "only_stations_with_coords": true
+    }
+  },
+  "station_links": [
+    {
+      "model": "adl_adcon_db_plugin.ADCONStationLink",
+      "station": "DEMO001",
+      "fields": {"adcon_station_id": "$ENV:ADCON_STATION_ID_1|1001", "start_date": "$NOW-1d"},
+      "children": {
+        "variable_mappings": [
+          {"adl_parameter": "Air Temperature", "adcon_parameter_id": "$ENV:ADCON_TAG_TEMP_1|10011", "adcon_parameter_unit": "degC"},
+          {"adl_parameter": "Relative Humidity", "adcon_parameter_id": "$ENV:ADCON_TAG_RH_1|10012", "adcon_parameter_unit": "percent"},
+          {"adl_parameter": "Atmospheric Pressure", "adcon_parameter_id": "$ENV:ADCON_TAG_PRES_1|10013", "adcon_parameter_unit": "hPa"},
+          {"adl_parameter": "Precipitation", "adcon_parameter_id": "$ENV:ADCON_TAG_RAIN_1|10014", "adcon_parameter_unit": "mm"},
+          {"adl_parameter": "Wind Speed", "adcon_parameter_id": "$ENV:ADCON_TAG_WIND_1|10015", "adcon_parameter_unit": "m/s"},
+          {"adl_parameter": "Wind Direction", "adcon_parameter_id": "$ENV:ADCON_TAG_WDIR_1|10016", "adcon_parameter_unit": "degree"}
+        ]
+      }
+    },
+    {
+      "model": "adl_adcon_db_plugin.ADCONStationLink",
+      "station": "DEMO002",
+      "fields": {"adcon_station_id": "$ENV:ADCON_STATION_ID_2|1002", "start_date": "$NOW-1d"},
+      "children": {
+        "variable_mappings": [
+          {"adl_parameter": "Air Temperature", "adcon_parameter_id": "$ENV:ADCON_TAG_TEMP_2|10021", "adcon_parameter_unit": "degC"},
+          {"adl_parameter": "Relative Humidity", "adcon_parameter_id": "$ENV:ADCON_TAG_RH_2|10022", "adcon_parameter_unit": "percent"}
+        ]
+      }
+    }
+  ]
+}
