@@ -1,3 +1,10 @@
+---
+adl_plugin:
+  name: ADL ADCON DB Plugin
+  connects_to: ADCON Postgres database
+  category: general
+  choose_when: Your stations use ADCON hardware with a Postgres database.
+---
 # ADL ADCON DB Plugin
 
 Collects observation data from an **ADCON Telemetry addVANTAGE Pro** server by
@@ -34,7 +41,7 @@ them to ADL, which stores each mapped tag's value after unit conversion.
 
 ## Prerequisites
 
-- A running ADL instance (see the ADL installation guide).
+- A running ADL instance (see [Installation](https://adl-tool.readthedocs.io/en/latest/installation.html)).
 - Network access from the ADL host to the addVANTAGE **PostgreSQL port**
   (`5432` by default) on the database host — usually the addVANTAGE server
   itself. This is a database connection, not HTTP: the port must be open in
@@ -47,8 +54,8 @@ them to ADL, which stores each mapped tag's value after unit conversion.
 
 ## Installation
 
-Installed like any ADL plugin — see the core *Plugin Installation* page for all
-methods. The `plugins.toml` entry:
+Installed like any ADL plugin — see [Plugin Installation](https://adl-tool.readthedocs.io/en/latest/developer_guide/plugins/plugin_installation.html) for
+all methods. The `plugins.toml` entry:
 
 ```toml
 [[plugins]]
@@ -63,7 +70,7 @@ After rebuild/restart, confirm with `docker compose exec adl list-plugins`.
 
 In the ADL admin, create a new **ADCON Database Connection**. Base connection
 fields (name, network, timezone, plugin processing settings) are described in
-the core user guide. Plugin-specific fields:
+[Manage Connections](https://adl-tool.readthedocs.io/en/latest/user_guide/manage_connections.html). Plugin-specific fields:
 
 | Field | Required | Default | Description |
 |---|---|---|---|
@@ -190,7 +197,7 @@ configuration faults apart *for this connection specifically*. The screens
 below are rendered by the ADL core, but what they display for an ADCON
 connection comes from this plugin (and from PostgreSQL itself — see the
 catalogue). The core's own messages on the same screens are catalogued in the
-core guide's [Monitoring & Diagnostics](https://adl.readthedocs.io/en/latest/user_guide/monitoring_and_diagnostics.html) page.
+core guide's [Monitoring & Diagnostics](https://adl-tool.readthedocs.io/en/latest/user_guide/monitoring_and_diagnostics.html) page.
 
 ### Where check results appear
 

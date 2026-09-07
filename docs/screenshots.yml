@@ -83,7 +83,9 @@ screenshots:
 - name: adcon_db_station_detail
   url: /adl-db-plugin/station-detail/1/
   capture:
-    selector: main
+    # The page's own content block, not <main>: main is the admin's scroll
+    # container, so cropping to it trails ~450px of empty space below the table.
+    selector: 'div:has(> h1):has(> div > table.station-detail)'
 - name: adcon_db_ingestion_diagnostic
   url: /monitoring/connection/1/health/
   callouts:
